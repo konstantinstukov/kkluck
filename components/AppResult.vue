@@ -25,6 +25,16 @@ const filterParticipants = computed(() => {
   return props.apiResult.filter(participant => {
     if (!participant?.user?.id) return false;
 
+    if (props.formData.findByWord && props.formData.filterBy === 'comment') {
+      const searchWord = props.formData.word.toLowerCase();
+      const comment = participant.text?.toLowerCase() || '';
+
+      if (searchWord && !comment.includes(searchWord)) {
+        error.value = "Не найдено совпадений по слову / фразе";
+        return false;
+      }
+    }
+
     const userId = participant.user.id;
     if (!uniqueIds.has(userId)) {
       uniqueIds.add(userId);
