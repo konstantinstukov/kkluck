@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import type {Participant} from "~/types";
+import {ParticipantService} from "~/services/ParticipantService";
+import {WinnerService} from "~/services/WinnerService";
 
-const participantService = useParticipantService();
-const winnerService = useWinnerService();
+const participantService = new ParticipantService();
+const winnerService = new WinnerService();
 
 const props = defineProps({
   formData: {
