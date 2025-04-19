@@ -479,7 +479,7 @@ const submitFormData = async () => {
     <AppForm @submit-form-data="handleFormData"/>
     <div v-if="showResult" class="mt-8">
       <div v-if="isLoading" class="flex justify-center">
-        <div class="w-8 h-8 border-4 border-orange border-t-transparent rounded-full animate-spin"></div>
+        <div class="w-8 h-8 border-4 border-orange border-t-transparent rounded-full animate-spin"/>
       </div>
       <AppResult
           v-else-if="apiResult"
@@ -492,5 +492,3 @@ const submitFormData = async () => {
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

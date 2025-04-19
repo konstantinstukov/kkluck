@@ -44,7 +44,7 @@ onUnmounted(() => {
           <button class="modal-close" @click="closeModal">×</button>
         </div>
         <div class="modal-content">
-          <slot></slot>
+          <slot/>
         </div>
       </div>
     </div>

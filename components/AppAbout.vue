@@ -1,7 +1,4 @@
 <script setup>
-import {ref} from 'vue';
-import AppModal from './AppModal.vue';
-
 const isModalOpen = ref(false);
 
 const openModal = () => {
