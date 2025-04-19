@@ -1,7 +1,10 @@
+<script setup>
+import AppAbout from './AppAbout.vue';
+</script>
+
 <template>
   <header
       class="flex items-center justify-between h-12.5 bg-(--color-toolbar-background) shadow-(--shadow-6) fixed z-110 w-full"
-  >
     <a href="https://kknights.com/">
       <div class="pl-5 pr-5">
         <svg

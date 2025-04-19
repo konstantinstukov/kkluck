@@ -1,9 +1,10 @@
-<script setup>
-onMounted(() => {
-  selectWinners();
-});
+<script lang="ts" setup>
+import type {Participant} from "~/types";
+import {ParticipantService} from "~/services/ParticipantService";
+import {WinnerService} from "~/services/WinnerService";
 
-const error = ref(null);
+const participantService = new ParticipantService();
+const winnerService = new WinnerService();
 
 const props = defineProps({
   formData: {
@@ -16,45 +17,39 @@ const props = defineProps({
   },
 });
 const localFormData = ref({...props.formData});
-const winners = ref(new Set());
+const winners = ref(new Set<Participant>());
+const error = ref<string | null>(null);
 
 const filterParticipants = computed(() => {
-  if (!Array.isArray(props.apiResult)) return [];
-
-  const uniqueIds = new Set();
-  return props.apiResult.filter(participant => {
-    if (!participant?.user?.id) return false;
-
-    const userId = participant.user.id;
-    if (!uniqueIds.has(userId)) {
-      uniqueIds.add(userId);
-      return true;
-    }
-    return false;
-  });
-});
+  return participantService.filterParticipants(props.apiResult, {
+    filterBy: localFormData.value.findBy,
+    findByWord: localFormData.value.findByWord,
+    word: localFormData.value.word,
+    hasImage: localFormData.value.hasImage,
+  })
+})
 
 const selectWinners = () => {
   const participants = filterParticipants.value;
   if (!participants.length) return;
 
-  if (localFormData.value.winnersCount > participants.length) {
-    error.value = `Максимальное доступное количество победителей: ${participants.length}`;
+  const validationError = winnerService.validateWinnersCount(localFormData.value.winnersCount, participants.length);
+
+  if (validationError) {
+    error.value = validationError;
     winners.value.clear();
     return;
   }
 
-  winners.value.clear();
-
-  const availableParticipants = [...participants];
-  const winnersCount = Math.min(localFormData.value.winnersCount, participants.length);
-
-  for (let i = 0; i < winnersCount; i++) {
-    const randomIndex = Math.floor(Math.random() * availableParticipants.length);
-    const winner = availableParticipants.splice(randomIndex, 1)[0];
-    winners.value.add(winner);
-  }
+  error.value = null;
+  winners.value = winnerService.selectWinners(participants, {
+    winnersCount: localFormData.value.winnersCount,
+  });
 };
+
+onMounted(() => {
+  selectWinners();
+})
 </script>
 
 <template>
