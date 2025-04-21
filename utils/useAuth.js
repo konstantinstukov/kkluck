@@ -3,16 +3,16 @@ export const useAuth = () => {
 
   const fetchCSRFToken = async () => {
     const csrfToken = useCookie("csrftoken").value;
-    if (!csrfToken) {
-      console.error("CSRF token is missing.");
-    }
     if (csrfToken) return;
 
-    await $fetch("/user/csrf/", {
-      baseURL: config.public.apiBase,
-      credentials: "include",
-      mode: "no-cors",
-    });
+    try {
+      await $fetch("/user/csrf/", {
+        baseURL: config.public.apiBase,
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Failed to fetch CSRF token:", error);
+    }
   };
 
   const login = async (email, password) => {
