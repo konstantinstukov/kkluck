@@ -4,5 +4,6 @@
       "BUN_INSTALL": "1"
     }
   },
+  "installCommand": "bun install",
   "buildCommand": "bun run build"
 }
