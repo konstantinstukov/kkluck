@@ -13,6 +13,10 @@ const authForm = async () => {
     loading.value = true;
     errorMsg.value = "";
 
+    await $fetch("/api/csrf", {
+      method: "GET",
+    });
+
     const response = await $fetch("/api/login", {
       method: "POST",
       body: {
@@ -24,7 +28,7 @@ const authForm = async () => {
       },
     });
 
-    if (response.access) {
+    if (response.success) {
       await router.push("/");
     } else {
       errorMsg.value = "Неверные учетные данные";
