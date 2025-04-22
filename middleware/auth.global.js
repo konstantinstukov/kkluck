@@ -1,7 +1,7 @@
 export default defineNuxtRouteMiddleware((to) => {
-  const sessionId = useCookie("access_token").value;
+  const csrfToken = useCookie("csrftoken").value;
 
-  if (!sessionId && to.path !== "/login") {
+  if (!csrfToken && to.path !== "/login") {
     return navigateTo("/login");
   }
 });
