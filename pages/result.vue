@@ -8,16 +8,19 @@ const error = ref(null);
 const participants = ref([]);
 const winners = ref([]);
 
-const { getApiData } = useApiData();
-
 onMounted(async () => {
   try {
-    const apiData = await getApiData(formDataStore.link);
-    const participantsData = useFilterParticipants(apiData, formDataStore);
+    const { data } = await useFetch("/api/data", {
+      method: "POST",
+      body: {
+        url: formDataStore.link,
+      },
+    });
+    const participantsData = useFilterParticipants(data, formDataStore);
     participants.value = participantsData;
     winners.value = useWinnerSelect(participants, formDataStore.winnersCount);
     isLoading.value = false;
-  } catch {
+  } catch (err) {
     console.error(err);
     error.value = "Ошибка при загрузке данных";
     isLoading.value = false;
@@ -27,6 +30,7 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col items-center gap-7.5 max-w-[440px] container">
+    <!-- Loading Spinner -->
     <div v-if="isLoading" role="status">
       <svg
         aria-hidden="true"
@@ -46,6 +50,13 @@ onMounted(async () => {
       </svg>
       <span class="sr-only">Loading...</span>
     </div>
+
+    <!-- Error message -->
+    <div v-if="error" class="text-red-500 text-center">
+      {{ error }}
+    </div>
+
+    <!-- Content if no error and loaded -->
     <div v-else class="flex flex-col items-center gap-4">
       <h1 class="text-center">
         Определение победителя среди
@@ -58,15 +69,10 @@ onMounted(async () => {
       >
         {{ formDataStore.link }}
       </a>
-    </div>
-    <div>
       <h2>Количество уникальных участников: {{ participants.length }}</h2>
     </div>
 
-    <div v-if="error" class="text-red-500 text-center">
-      {{ error }}
-    </div>
-
+    <!-- Winners list -->
     <div v-else class="flex flex-col items-center gap-4">
       <h2 class="title">
         {{ formDataStore.winnersCount > 1 ? "Победители:" : "Победитель:" }}
@@ -91,6 +97,8 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+
+    <!-- Back button -->
     <div>
       <button
         class="button-secondary text-(--color-red) cursor-pointer"
@@ -101,5 +109,3 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped></style>
