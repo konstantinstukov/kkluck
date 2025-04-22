@@ -10,22 +10,15 @@ const winners = ref([]);
 
 onMounted(async () => {
   try {
-    const { data } = await useFetch("/api/data", {
+    const { data } = await $fetch("/api/data", {
       method: "POST",
       body: {
         url: formDataStore.link,
       },
     });
 
-    const participantsData = useFilterParticipants(data, {
-      filterBy: formDataStore.filterBy,
-      hasImage: formDataStore.hasImage,
-      findByWord: formDataStore.findByWord,
-      word: formDataStore.word,
-    });
+    console.log("Data from api: ", data);
 
-    participants.value = participantsData;
-    winners.value = useWinnerSelect(participants, formDataStore.winnersCount);
     isLoading.value = false;
   } catch (err) {
     console.error(err);

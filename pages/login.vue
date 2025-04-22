@@ -5,34 +5,41 @@ const authFormData = reactive({
 });
 
 const errorMsg = ref("");
-const router = useRouter();
 const loading = ref(false);
+
+const getCsrfToken = async () => {
+  await $fetch("api/user/csrf/", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("csrftoken="))
+    ?.split("=")[1];
+};
 
 const authForm = async () => {
   try {
     loading.value = true;
     errorMsg.value = "";
 
-    await $fetch("/api/csrf", {
-      method: "GET",
-    });
+    const csrfToken = await getCsrfToken();
 
-    const response = await $fetch("/api/login", {
+    await $fetch("api/auth/sign-in/", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
+      credentials: "include",
       body: {
         email: authFormData.email,
         password: authFormData.password,
       },
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
 
-    if (response.success) {
-      await router.push("/");
-    } else {
-      errorMsg.value = "Неверные учетные данные";
-    }
+    await navigateTo("/");
   } catch (err) {
     console.error("Auth error:", err);
     errorMsg.value = "Ошибка авторизации: Доступ запрещен";
