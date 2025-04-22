@@ -17,6 +17,8 @@ export default defineEventHandler(async (event) => {
   try {
     const { url } = await readBody(event);
 
+    console.log("url: ", url);
+
     const data = await $fetch(getApiPath(url), {
       method: "GET",
       baseURL: config.public.apiBase,
@@ -25,6 +27,8 @@ export default defineEventHandler(async (event) => {
         cookie: getHeader(event, "cookie") || "",
       },
     });
+
+    console.log("data: ", data);
 
     if (Array.isArray(data)) {
       return data;
