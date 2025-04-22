@@ -1,10 +1,8 @@
 export const useFilterParticipants = (participants, filter) => {
   let filterError;
 
-  console.log("participants for filter: ", participants);
-  console.log("filter: ", filter);
-  
-  
+  console.log("participants for filter: ", participants.value);
+  console.log("filter: ", filter.value);
 
   if (filter.findBy === "like") return [];
 
