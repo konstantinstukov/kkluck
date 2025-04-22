@@ -16,7 +16,14 @@ onMounted(async () => {
         url: formDataStore.link,
       },
     });
-    const participantsData = useFilterParticipants(data, formDataStore);
+
+    const participantsData = useFilterParticipants(data, {
+      filterBy: formDataStore.filterBy,
+      hasImage: formDataStore.hasImage,
+      findByWord: formDataStore.findByWord,
+      word: formDataStore.word,
+    });
+
     participants.value = participantsData;
     winners.value = useWinnerSelect(participants, formDataStore.winnersCount);
     isLoading.value = false;

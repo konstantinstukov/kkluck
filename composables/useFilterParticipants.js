@@ -1,15 +1,19 @@
 export const useFilterParticipants = (participants, filter) => {
   let filterError;
 
-  console.log("participants for filter: ", participants.value);
-  console.log("filter: ", filter.value);
+  const participantsData = participants?.value?.success ? [] : participants;
+
+  console.log("Входные данные:", {
+    participants: participantsData,
+    filter: filter,
+  });
 
   if (filter.findBy === "like") return [];
 
   if (filter.findBy === "comment") {
     const uniqueParticipantsMap = new Map();
 
-    for (const participant of participants) {
+    for (const participant of participantsData) {
       if (!uniqueParticipantsMap.has(participant.user.id)) {
         uniqueParticipantsMap.set(participant.user.id, participant);
       }
