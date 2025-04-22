@@ -6,14 +6,34 @@ const authFormData = reactive({
 
 const errorMsg = ref("");
 const router = useRouter();
-const { login } = useAuth();
+const loading = ref(false);
 
 const authForm = async () => {
   try {
-    await login(authFormData.email, authFormData.password);
-    await router.push({ name: "/" });
+    loading.value = true;
+    errorMsg.value = "";
+
+    const response = await $fetch("/api/login", {
+      method: "POST",
+      body: {
+        email: authFormData.email,
+        password: authFormData.password,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.access) {
+      await router.push("/");
+    } else {
+      errorMsg.value = "Неверные учетные данные";
+    }
   } catch (err) {
-    errorMsg.value = err?.data?.detail || "Ошибка авторизации";
+    console.error("Auth error:", err);
+    errorMsg.value = "Ошибка авторизации: Доступ запрещен";
+  } finally {
+    loading.value = false;
   }
 };
 </script>
@@ -24,6 +44,7 @@ const authForm = async () => {
     @submit.prevent="authForm"
   >
     <h2>Вход с учётной записью kknights.com</h2>
+
     <div class="row">
       <div class="field">
         <input
