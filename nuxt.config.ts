@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: "https://kknights.com/api/v1",
+      apiBase: "https://kknights.com/api/v1/",
     },
   },
   modules: [
