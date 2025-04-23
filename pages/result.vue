@@ -8,18 +8,54 @@ const error = ref(null);
 const participants = ref([]);
 const winners = ref([]);
 
+const getDataPath = (url) => {
+  const isBonfire = url.includes("bonfire/");
+  const isPost = url.includes("posts/");
+  const isApiPost = url.includes("/api/v1/post/");
+  const filter = formDataStore.filterBy;
+
+  if (filter === "like") {
+    if (isBonfire) {
+      const match = url.match(/bonfire\/(\d+)/);
+      if (match) return `/api/like/${match[1]}/?type=3`;
+    }
+    if (isPost) {
+      const match = url.match(/posts\/(\d+)-/);
+      if (match) return `/api/like/${match[1]}/?type=1`;
+    }
+  }
+
+  if (filter === "comment") {
+    if (isBonfire) {
+      const match = url.match(/bonfire\/(\d+)/);
+      if (match) return `/api/shout/${match[1]}/`;
+    }
+    if (isPost) {
+      const match = url.match(/posts\/(\d+.*?)(?:\/|$)/);
+      if (match) return `/api/post/${match[1]}/`;
+    }
+    if (isApiPost) {
+      return url;
+    }
+  }
+
+  return null;
+};
+
 onMounted(async () => {
   try {
-    const { data } = await $fetch("/api/data", {
-      method: "POST",
-      body: {
-        url: formDataStore.link,
-      },
+    const response = await $fetch(getDataPath(formDataStore.link), {
+      method: "GET",
     });
 
-    console.log("Data from api: ", data);
+    participants.value = useFilterParticipants(response, formDataStore);
+    winners.value = useWinnerSelect(
+      participants.value,
+      formDataStore.winnersCount
+    );
 
     isLoading.value = false;
+    error.value = false;
   } catch (err) {
     console.error(err);
     error.value = "Ошибка при загрузке данных";
@@ -52,48 +88,50 @@ onMounted(async () => {
     </div>
 
     <!-- Error message -->
-    <div v-if="error" class="text-red-500 text-center">
+    <div v-else-if="error" class="text-red-500 text-center">
       {{ error }}
     </div>
 
     <!-- Content if no error and loaded -->
-    <div v-else class="flex flex-col items-center gap-4">
-      <h1 class="text-center">
-        Определение победителя среди
-        {{ formDataStore.filterBy === "like" ? "лапок" : "комментов" }} по
-        ссылке:
-      </h1>
-      <a
-        :href="formDataStore.link"
-        class="text-(--color-steam-key) text-center"
-      >
-        {{ formDataStore.link }}
-      </a>
-      <h2>Количество уникальных участников: {{ participants.length }}</h2>
-    </div>
-
-    <!-- Winners list -->
-    <div v-else class="flex flex-col items-center gap-4">
-      <h2 class="title">
-        {{ formDataStore.winnersCount > 1 ? "Победители:" : "Победитель:" }}
-      </h2>
-      <div class="flex flex-col gap-4">
-        <div
-          v-for="winner in winners"
-          :key="winner.user.id"
-          class="flex items-center gap-4"
+    <div v-else>
+      <div class="flex flex-col items-center gap-4">
+        <h1 class="text-center">
+          Определение победителя среди
+          {{ formDataStore.filterBy === "like" ? "лапок" : "комментов" }} по
+          ссылке:
+        </h1>
+        <a
+          :href="formDataStore.link"
+          class="text-(--color-steam-key) text-center"
         >
-          <a
-            class="text-(--color-orange) flex items-center gap-2.5"
-            :href="`https://kknights.com/users/${winner.user.id}`"
+          {{ formDataStore.link }}
+        </a>
+        <h2>Количество уникальных участников: {{ participants.length }}</h2>
+      </div>
+
+      <!-- Winners list -->
+      <div v-if="winners.length >= 1" class="flex flex-col items-center gap-4">
+        <h2 class="title">
+          {{ winners.length > 1 ? "Победители:" : "Победитель:" }}
+        </h2>
+        <div class="flex flex-col gap-4">
+          <div
+            v-for="winner in winners.value"
+            :key="winner.user.id"
+            class="flex items-center gap-4"
           >
-            <img
-              :src="winner.user.avatar.small"
-              alt="avatar"
-              class="w-[40px] h-[40px] rounded-full object-cover"
-            />
-            {{ winner.user.username }}
-          </a>
+            <a
+              class="text-(--color-orange) flex items-center gap-2.5"
+              :href="`https://kknights.com/users/${winner.user.id}`"
+            >
+              <img
+                :src="winner.user.avatar.small"
+                alt="avatar"
+                class="w-[40px] h-[40px] rounded-full object-cover"
+              />
+              {{ winner.user.username }}
+            </a>
+          </div>
         </div>
       </div>
     </div>

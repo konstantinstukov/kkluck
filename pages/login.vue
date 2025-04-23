@@ -8,7 +8,7 @@ const errorMsg = ref("");
 const loading = ref(false);
 
 const getCsrfToken = async () => {
-  await $fetch("api/user/csrf/", {
+  await $fetch("/api/user/csrf/", {
     method: "GET",
     credentials: "include",
   });
@@ -26,7 +26,7 @@ const authForm = async () => {
 
     const csrfToken = await getCsrfToken();
 
-    await $fetch("api/auth/sign-in/", {
+    await $fetch("/api/auth/sign-in/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
