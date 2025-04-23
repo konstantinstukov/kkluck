@@ -1,17 +1,10 @@
 export const useFilterParticipants = (participants, filter) => {
-  let filterError;
+  if (filter.filterBy === "like") return participants;
 
-  console.log("Входные данные:", {
-    participants: participants,
-    filter: filter,
-  });
-
-  if (filter.findBy === "like") return [];
-
-  if (filter.findBy === "comment") {
+  if (filter.filterBy === "comment") {
     const uniqueParticipantsMap = new Map();
 
-    for (const participant of participants) {
+    for (const participant of participants.comments) {
       if (!uniqueParticipantsMap.has(participant.user.id)) {
         uniqueParticipantsMap.set(participant.user.id, participant);
       }
@@ -35,7 +28,6 @@ export const useFilterParticipants = (participants, filter) => {
     return filteredParticipants;
   }
 
-  filterError = "Непредвиденный формат фильтра";
   console.error("Непредвиденный формат фильтра");
-  return filterError;
+  return [];
 };
