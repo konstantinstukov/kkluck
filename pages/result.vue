@@ -8,45 +8,14 @@ const error = ref(null);
 const participants = ref([]);
 const winners = ref([]);
 
-const getDataPath = (url) => {
-  const isBonfire = url.includes("bonfire/");
-  const isPost = url.includes("posts/");
-  const isApiPost = url.includes("/api/v1/post/");
-  const filter = formDataStore.filterBy;
-
-  if (filter === "like") {
-    if (isBonfire) {
-      const match = url.match(/bonfire\/(\d+)/);
-      if (match) return `/api/like/${match[1]}/?type=3`;
-    }
-    if (isPost) {
-      const match = url.match(/posts\/(\d+)-/);
-      if (match) return `/api/like/${match[1]}/?type=1`;
-    }
-  }
-
-  if (filter === "comment") {
-    if (isBonfire) {
-      const match = url.match(/bonfire\/(\d+)/);
-      if (match) return `/api/shout/${match[1]}/`;
-    }
-    if (isPost) {
-      const match = url.match(/posts\/(\d+.*?)(?:\/|$)/);
-      if (match) return `/api/post/${match[1]}/`;
-    }
-    if (isApiPost) {
-      return url;
-    }
-  }
-
-  return null;
-};
-
 onMounted(async () => {
   try {
-    const response = await $fetch(getDataPath(formDataStore.link), {
-      method: "GET",
-    });
+    const response = await $fetch(
+      useGetDataPath(formDataStore.link, formDataStore),
+      {
+        method: "GET",
+      }
+    );
 
     participants.value = useFilterParticipants(response, formDataStore);
     winners.value = useWinnerSelect(
@@ -110,13 +79,17 @@ onMounted(async () => {
       </div>
 
       <!-- Winners list -->
-      <div v-if="winners.length >= 1" class="flex flex-col items-center gap-4">
+      <div v-if="participants.length < 1">
+        <h2 class="title text-center">Нет подходящих участников =(</h2>
+      </div>
+
+      <div v-else class="flex flex-col items-center gap-4">
         <h2 class="title">
           {{ winners.length > 1 ? "Победители:" : "Победитель:" }}
         </h2>
         <div class="flex flex-col gap-4">
           <div
-            v-for="winner in winners.value"
+            v-for="winner in winners"
             :key="winner.user.id"
             class="flex items-center gap-4"
           >
