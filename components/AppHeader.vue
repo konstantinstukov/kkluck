@@ -1,18 +1,36 @@
 <script setup>
-import AppAbout from './AppAbout.vue';
+const logOut = async () => {
+  const csrfToken = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("csrftoken="))
+    ?.split("=")[1];
+
+  try {
+    await $fetch("api/auth/sign-out/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
+      credentials: "include",
+    });
+
+    await navigateTo("/login");
+  } catch (err) {
+    console.error("Auth error:", err);
+  }
+};
 </script>
 
 <template>
-  <header
-    class="flex items-center justify-between h-12.5 bg-(--color-toolbar-background) shadow-(--shadow-6) fixed z-110 w-full"
-  >
+  <header class="header">
     <a href="https://kknights.com/">
       <div class="pl-5 pr-5">
         <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 30.1 32.01"
-          style="height: 30px"
           class="fill-(--color-steam-key)"
+          style="height: 30px"
+          viewBox="0 0 30.1 32.01"
+          xmlns="http://www.w3.org/2000/svg"
         >
           <g id="Layer_2" data-name="Layer 2">
             <g id="Layer_1-2" data-name="Layer 1">
@@ -33,8 +51,24 @@ import AppAbout from './AppAbout.vue';
         </svg>
       </div>
     </a>
-    <div class="pr-5">
+    <div class="flex gap-5 pr-5">
+      <button class="menu-link" @click="logOut">Logout</button>
       <AppAbout />
     </div>
   </header>
 </template>
+
+<style scoped>
+.header {
+  box-shadow: var(--shadow-6);
+  height: 50px;
+  width: 100%;
+  padding: 0 20px;
+  position: fixed;
+  z-index: 110;
+  background: var(--color-toolbar-background);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+</style>
