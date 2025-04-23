@@ -1,4 +1,26 @@
-<script setup></script>
+<script setup>
+const logOut = async () => {
+  const csrfToken = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("csrftoken="))
+    ?.split("=")[1];
+
+  try {
+    await $fetch("api/auth/sign-out/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
+      credentials: "include",
+    });
+
+    await navigateTo("/login");
+  } catch (err) {
+    console.error("Auth error:", err);
+  }
+};
+</script>
 
 <template>
   <header class="header">
@@ -29,7 +51,8 @@
         </svg>
       </div>
     </a>
-    <div class="flex gap-1 pr-5">
+    <div class="flex gap-5 pr-5">
+      <button class="menu-link" @click="logOut">Logout</button>
       <AppAbout />
     </div>
   </header>
