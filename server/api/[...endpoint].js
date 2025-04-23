@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  console.log("Received request:", event.req.url);
+  console.log("Received request:", event.node.req.url);
   const config = useRuntimeConfig();
   let endpoint = event.context.params.endpoint;
 
@@ -7,7 +7,10 @@ export default defineEventHandler(async (event) => {
     endpoint = endpoint.join("/");
   }
 
-  const url = new URL(event.req.url, `http://${event.req.headers.host}`);
+  const url = new URL(
+    event.node.req.url,
+    `http://${event.node.req.headers.host}`
+  );
 
   const searchParams = url.search;
   const targetUrl = `${config.public.apiBase}${endpoint}/${searchParams}`;

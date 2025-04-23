@@ -1,4 +1,14 @@
 <script setup>
+import { useAuthStore } from "~/store/authStore";
+
+const authStore = useAuthStore();
+
+onMounted(() => {
+  if (authStore.user) {
+    navigateTo("/");
+  }
+});
+
 const authFormData = reactive({
   email: "",
   password: "",
