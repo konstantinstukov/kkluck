@@ -62,6 +62,11 @@ const closeModal = () => {
         <ol class="usage-list">
           <li>
             <span class="usage-step"
+              >Залогиньтесь с помощью данных аккаунта kknights.com</span
+            >
+          </li>
+          <li>
+            <span class="usage-step"
               >Вставьте ссылку на пост или записку в кострище в формате:</span
             >
             <ul class="usage-sublist">
