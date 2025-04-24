@@ -1,13 +1,18 @@
-export const useAuthStore = defineStore("auth", () => {
-  const user = ref(null);
-
-  const setUser = (newUser) => {
-    user.value = newUser;
-  };
-
-  const clearUser = (user) => {
-    user.value = null;
-  };
-
-  return { user, setUser, clearUser };
+export const useAuthStore = defineStore("auth", {
+	state: () => ({
+		user: null,
+		isCheckingAuth: false,
+	}),
+	getters: {
+		getUser: (state) => state.user,
+		isLoggedIn: (state) => !!state.user,
+	},
+	actions: {
+		setUser(newUser) {
+			this.user = newUser;
+		},
+	},
+	persist: {
+		storage: piniaPluginPersistedstate.sessionStorage(),
+	},
 });
