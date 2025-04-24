@@ -1,14 +1,21 @@
 <script setup>
+import { useResultStore } from "~/store/resultStore";
 import { useFormDataStore } from "~/store/store";
 
 const formDataStore = useFormDataStore();
+const resultStore = useResultStore();
+
 const router = useRouter();
 const isLoading = ref(true);
 const error = ref(null);
-const participants = ref([]);
-const winners = ref([]);
 
 onMounted(async () => {
+  console.log(resultStore.getParticipants);
+  if (resultStore.getParticipants && resultStore.getWinners) {
+    isLoading.value = false;
+    return;
+  }
+
   try {
     const response = await $fetch(
       useGetDataPath(formDataStore.link, formDataStore),
@@ -17,10 +24,9 @@ onMounted(async () => {
       }
     );
 
-    participants.value = useFilterParticipants(response, formDataStore);
-    winners.value = useWinnerSelect(
-      participants.value,
-      formDataStore.winnersCount
+    resultStore.setParticipants(useFilterParticipants(response, formDataStore));
+    resultStore.setWinners(
+      useWinnerSelect(resultStore.getParticipants, formDataStore.winnersCount)
     );
 
     isLoading.value = false;
@@ -31,6 +37,11 @@ onMounted(async () => {
     isLoading.value = false;
   }
 });
+
+const goBack = () => {
+  resultStore.clearResults();
+  router.back();
+};
 </script>
 
 <template>
@@ -66,8 +77,8 @@ onMounted(async () => {
       <div class="flex flex-col items-center gap-4">
         <h1 class="text-center">
           Определение победителя среди
-          {{ formDataStore.filterBy === "like" ? "лапок" : "комментов" }} по
-          ссылке:
+          {{ formDataStore.filterBy === "like" ? "лапок" : "комментов" }}
+          по ссылке:
         </h1>
         <a
           :href="formDataStore.link"
@@ -75,21 +86,32 @@ onMounted(async () => {
         >
           {{ formDataStore.link }}
         </a>
-        <h2>Количество уникальных участников: {{ participants.length }}</h2>
+        <h2>
+          Количество уникальных участников:
+          {{
+            resultStore.getParticipants ? resultStore.getParticipants.length : 0
+          }}
+        </h2>
       </div>
 
       <!-- Winners list -->
-      <div v-if="participants.length < 1">
+      <div
+        v-if="
+          !resultStore.getParticipants || resultStore.getParticipants.length < 1
+        "
+      >
         <h2 class="title text-center">Нет подходящих участников =(</h2>
       </div>
 
       <div v-else class="flex flex-col items-center gap-4">
         <h2 class="title">
-          {{ winners.length > 1 ? "Победители:" : "Победитель:" }}
+          {{
+            resultStore.getWinners.length > 1 ? "Победители:" : "Победитель:"
+          }}
         </h2>
         <div class="flex flex-col gap-4">
           <div
-            v-for="winner in winners"
+            v-for="winner in resultStore.getWinners"
             :key="winner.user.id"
             class="flex items-center gap-4"
           >
@@ -113,7 +135,7 @@ onMounted(async () => {
     <div>
       <button
         class="button-secondary text-(--color-red) cursor-pointer"
-        @click="router.back()"
+        @click="goBack"
       >
         Назад
       </button>
