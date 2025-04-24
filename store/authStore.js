@@ -5,9 +5,16 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = newUser;
   };
 
-  const clearUser = (user) => {
+  const clearUser = () => {
     user.value = null;
   };
 
-  return { user, setUser, clearUser };
+  return {
+    user,
+    setUser,
+    clearUser,
+    persist: {
+      storage: piniaPluginPersistedstate.sessionStorage,
+    },
+  };
 });
