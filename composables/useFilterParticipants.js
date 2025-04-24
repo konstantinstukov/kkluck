@@ -4,11 +4,21 @@ export const useFilterParticipants = (participants, filter) => {
   if (filter.filterBy === "comment") {
     const uniqueParticipantsMap = new Map();
 
-    for (const participant of participants.comments) {
-      if (!uniqueParticipantsMap.has(participant.user.id)) {
-        uniqueParticipantsMap.set(participant.user.id, participant);
+    const processComments = (comments) => {
+      if (!comments || !comments.length) return;
+
+      for (const comment of comments) {
+        if (!uniqueParticipantsMap.has(comment.user.id)) {
+          uniqueParticipantsMap.set(comment.user.id, comment);
+        }
+
+        if (comment.children && comment.children.length > 0) {
+          processComments(comment.children);
+        }
       }
-    }
+    };
+
+    processComments(participants.comments);
 
     let filteredParticipants = Array.from(uniqueParticipantsMap.values());
 
