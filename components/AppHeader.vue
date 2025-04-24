@@ -1,4 +1,10 @@
 <script setup>
+import { useAuthStore } from "~/store/authStore";
+
+const route = useRoute();
+
+const { clearUser } = useAuthStore();
+
 const logOut = async () => {
   const csrfToken = document.cookie
     .split("; ")
@@ -14,6 +20,8 @@ const logOut = async () => {
       },
       credentials: "include",
     });
+
+    clearUser();
 
     await navigateTo("/login");
   } catch (err) {
@@ -52,7 +60,9 @@ const logOut = async () => {
       </div>
     </a>
     <div class="flex gap-5 pr-5">
-      <button class="menu-link" @click="logOut">Logout</button>
+      <button v-if="route.path !== '/login'" class="menu-link" @click="logOut">
+        Logout
+      </button>
       <AppAbout />
     </div>
   </header>
