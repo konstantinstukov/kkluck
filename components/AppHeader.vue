@@ -12,7 +12,7 @@ const logOut = async () => {
     ?.split("=")[1];
 
   try {
-    await $fetch("api/auth/sign-out/", {
+    await $fetch("/api/auth/sign-out/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
