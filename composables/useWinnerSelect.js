@@ -22,6 +22,5 @@ export function useWinnerSelect(participants, maxWinners) {
     const winner = available.splice(randomIndex, 1)[0];
     winners.push(winner);
   }
-  console.log(winners);
   return winners;
 }
