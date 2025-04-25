@@ -36,25 +36,32 @@ export const useParticipantsData = () => {
   const fetchParticipants = async (link, formData) => {
     if (formData.filterByLike && formData.filterByComment) {
       const [likesResponse, commentsResponse] = await Promise.all([
-        $fetch(useGetDataPath(link, { ...formData, filterBy: "like" })),
-        $fetch(useGetDataPath(link, { ...formData, filterBy: "comment" })),
+        $fetch(useGetDataPath(link, { ...formData, filterByComment: false })),
+        $fetch(useGetDataPath(link, { ...formData, filterByLike: false })),
       ]);
+
+      const commentsUsersMap = new Map();
+      processComments(commentsResponse.comments, commentsUsersMap);
 
       const uniqueParticipants = new Map();
 
-      likesResponse.likes?.forEach((like) => {
-        uniqueParticipants.set(like.user.id, like);
+      likesResponse.forEach((participant) => {
+        if (participant.user.id && commentsUsersMap.has(participant.user.id)) {
+          uniqueParticipants.set(participant.user.id, participant);
+        }
       });
 
-      processComments(commentsResponse.comments, uniqueParticipants);
+      console.log("uniqueParticipants: ", uniqueParticipants);
 
       return Array.from(uniqueParticipants.values());
     }
 
     const response = await $fetch(useGetDataPath(link, formData));
 
+    console.log("response: ", response);
+
     if (formData.filterByLike) {
-      return response.likes || [];
+      return response || [];
     }
 
     if (formData.filterByComment) {
