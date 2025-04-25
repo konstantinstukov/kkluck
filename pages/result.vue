@@ -10,47 +10,44 @@ const isLoading = ref(true);
 const error = ref(null);
 
 onMounted(async () => {
-    if (!formDataStore.getLink) {
-        await navigateTo("/");
-        return;
-    }
+  if (!formDataStore.getLink) {
+    await navigateTo("/");
+    return;
+  }
 
-    if (resultStore.getParticipants && resultStore.getWinners) {
-        isLoading.value = false;
-        return;
-    }
+  if (resultStore.getParticipants && resultStore.getWinners) {
+    isLoading.value = false;
+    return;
+  }
 
-    try {
-        const response = await $fetch(
-            useGetDataPath(formDataStore.getLink, formDataStore.getFormData()),
-            {
-                method: "GET",
-            },
-        );
+  try {
+    const response = await $fetch(
+      useGetDataPath(formDataStore.getLink, formDataStore.getFormData()),
+      {
+        method: "GET",
+      }
+    );
 
-        resultStore.setParticipants(
-            useFilterParticipants(response, formDataStore),
-        );
-        resultStore.setWinners(
-            useWinnerSelect(
-                resultStore.getParticipants,
-                formDataStore.getWinnersCount,
-            ),
-        );
+    resultStore.setParticipants(useFilterParticipants(response, formDataStore));
+    resultStore.setWinners(
+      useWinnerSelect(
+        resultStore.getParticipants,
+        formDataStore.getWinnersCount
+      )
+    );
 
-        isLoading.value = false;
-        error.value = false;
-    } catch (err) {
-        console.error(err);
-        error.value = "Ошибка при загрузке данных";
-        isLoading.value = false;
-    }
+    isLoading.value = false;
+    error.value = false;
+  } catch (err) {
+    console.error(err);
+    error.value = "Ошибка при загрузке данных";
+    isLoading.value = false;
+  }
 });
 
 const goBack = () => {
-    router.back();
-    resultStore.$reset();
-    formDataStore.$reset();
+  resultStore.$reset();
+  router.back();
 };
 </script>
 
