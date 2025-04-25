@@ -15,129 +15,75 @@ useSeoMeta({
       <AppHeader />
       <NuxtLoadingIndicator />
       <main class="view">
-        <div class="pushable-content">
+        <div class="main-content">
           <NuxtPage />
         </div>
       </main>
+      <AppFooter />
     </NuxtLayout>
   </div>
 </template>
 
 <style lang="scss">
-body {
-  --color-white: #cdc6dc;
-  --color-pink: #e14fa1;
-  --color-orange: #ac91df;
-  --color-violet: #a374de;
-  --color-orange: #ff9e4a;
-  --color-blue-300: #a6deff;
-  --color-red: #fb5555;
-  --color-green: #7cc89b;
-  --color-gray: #817795;
-  --color-gray-300: #ededed;
-  --color-dark: #181320;
-  --color-dark-300: #221b2d;
-  --color-button-primary-blue-background: #553b3d;
-  --color-button-primary-blue-300-background: #475361;
-  --color-button-primary-red-background: #59373e;
-  --color-button-primary-green-background: #3f4e4c;
-  --color-button-primary-gray-background: #231d2d;
-  --color-button-primary-dark-background: #2b2b33;
-  --color-button-raised-blue-background: #ff9e4a;
-  --color-button-raised-light-blue-background: #a6deff;
-  --color-button-raised-red-background: #fb5555;
-  --color-button-raised-green-background: #7cc89b;
-  --color-button-raised-gray-background: #817795;
-  --color-button-raised-dark-background: #cdc6dc;
-  --color-button-raised-dark-text: #121212;
-  --color-button-raised-background: #221b2d;
-  --color-button-raised-lighter-background: #2a2239;
-  --color-body-background: #110d16;
-  --color-expand-button-background: #110c18;
-  --color-panel-background: #181320;
-  --color-panel-line: #101014;
-  --color-scrollbar: #181320;
-  --color-scrollbar-thumb: #2a2239;
-  --color-tag-background: #221b2d;
-  --color-tag-text: #cdc6dc;
-  --color-tag-hover-background: #cdc6dc;
-  --color-tag-hover-text: #221b2d;
-  --color-gallery-background: #17171c;
-  --color-gallery-missing-background: #2a2239;
-  --color-gallery-svg: #817795;
-  --color-gallery-caption-background: #110d16;
-  --color-comment-shout-line: #553b3d;
-  --color-comment-shout-highlight-background: #553b3d;
-  --color-comment-expand-line: #817795;
-  --color-comment-expand-background: #221b2d;
-  --color-comment-reply-background: #121212;
-  --color-heading: #cdc6dc;
-  --color-heading-reverted: #cdc6dc;
-  --color-text: #cdc6dc;
-  --color-text-reverted: #181320;
-  --color-input-background: #110d16;
-  --color-input-text: #cdc6dc;
-  --color-input-placeholder: #817795;
-  --color-modal-wrapper-background: rgba(0, 0, 0, 0.66);
-  --color-modal-background: #2a2239;
-  --color-stream-item-line: #110d16;
-  --color-editor-block-hover-background: #221b2d;
-  --color-spoiler-background: #60656e;
-  --color-bubble-background: #2a2239;
-  --color-select-option-selected: #221b2d;
-  --color-select-option-highlight: #221b2d;
-  --color-select-tag-dropdown: #221b2d;
-  --color-select-tag-dropdown-highlight: #181320;
-  --color-mention-background: #221b2d;
-  --color-mention-highlight: #2a2239;
-  --color-toolbar-background: #2a2239;
-  --color-sidebar-background: #221b2d;
-  --color-mobile-toolbar-background: #2a2239;
-  --color-mobile-menu-background: #110d16;
-  --color-mobile-button: #221b2d;
-  --color-user-label-background: #221b2d;
-  --color-user-label-text: #cdc6dc;
-  --color-steam-key: #ff9e4a;
-  --color-online-off: #433e4d;
-  --shadow-2: 2px 2px 20px 0 rgba(8, 1, 19, 0.18);
-  --shadow-6: 2px 2px 20px 0 rgba(8, 1, 19, 0.18);
-
-  font-size: 1rem;
-  line-height: 1;
-  font-family: Open Sans, sans-serif;
-  color: var(--color-text);
-}
-
-.container {
-  padding: 20px;
-  background: var(--color-panel-background);
-  border-radius: 24px;
-}
-
-.title {
-  font-family: Railway, sans-serif;
-  font-weight: 600;
-  font-size: 1.2rem;
-}
-
 .app {
-  position: relative;
-  min-height: 100dvh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--color-body-background);
 }
 
 .view {
-  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   padding-top: 50px;
+  padding-bottom: 20px;
 }
 
-.pushable-content {
+.main-content {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  margin: 32px 0;
-  padding: 0 16px;
+  align-items: center;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 1200px;
+  margin: 32px auto;
+  padding: 0 20px;
+}
+
+.container {
+  padding: 30px;
+  border-radius: 24px;
+  box-shadow: 2px 2px 20px 0 rgba(13, 66, 115, 0.21);
+}
+
+.title {
+  font-size: 1.2rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+}
+
+.input-simple {
+  height: 40px;
+  width: 100%;
+  border-radius: 8px;
+  border: 2px solid var(--color-blue-200);
+  background: var(--color-toolbar-background);
+  color: var(--color-input-text);
+  font-family: Open Sans, sans-serif;
+  font-size: 14px;
+  padding: 8px 8px 10px;
+  box-shadow: none;
+  outline: 0 none transparent;
+  margin-top: 10px;
+}
+
+.form-input--correct {
+  border: 2px solid var(--color-green-500);
+}
+
+.form-input--error {
+  border: 2px solid var(--color-red-500);
 }
 
 .button {
@@ -149,36 +95,20 @@ body {
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-}
 
-.button-secondary {
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  padding: 0;
-  background: none;
-}
-
-.menu-link {
-  font-family: Raleway, sans-serif;
-  font-weight: 600;
+  height: 40px;
+  border-radius: 8px;
   font-size: 1rem;
-  color: var(--color-text);
-  opacity: 0.7;
-  white-space: nowrap;
-}
+  font-weight: 600;
+  padding: 0 20px;
+  text-align: center;
 
-.menu-link:hover {
-  cursor: pointer;
-  opacity: 1;
-}
+  color: var(--color-orange);
+  background: var(--color-button-primary-blue-background);
 
-.title {
-  font-family: Raleway, sans-serif;
-  font-weight: 700;
-  font-size: 1.5rem;
-  line-height: 2.8rem;
-  color: var(--color-heading);
-  transition: opacity 0.3s;
+  &:hover {
+    color: var(--color-black);
+    background: var(--color-orange);
+  }
 }
 </style>

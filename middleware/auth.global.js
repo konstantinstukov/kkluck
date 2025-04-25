@@ -2,24 +2,16 @@ import { useAuthStore } from "~/store/authStore";
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const authStore = useAuthStore();
-  const isAuthChecking = ref(true);
 
   if (!authStore.user) {
-    await callOnce(async () => {
-      try {
-        const { data: user } = await useFetch("/api/user/me");
-
-        if (user.value) {
-          authStore.setUser(user.value);
-        }
-      } finally {
-        isAuthChecking.value = false;
+    try {
+      const { data: user } = await useFetch("/api/user/me");
+      if (user.value) {
+        authStore.setUser(user.value);
       }
-    });
-  }
-
-  if (isAuthChecking.value) {
-    return;
+    } catch (e) {
+      console.error("Ошибка при получении пользователя", e);
+    }
   }
 
   if (authStore.user && to.path === "/login") {
