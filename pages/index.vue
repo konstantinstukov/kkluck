@@ -28,6 +28,8 @@ watch(
     if (!newFindByWord) {
       word.value = "";
       hasImage.value = false;
+      isWordCorrect.value = null;
+      wordErrorText.value = "";
     }
 
     if (!newFilterByComment) {
@@ -105,12 +107,15 @@ const sendFormData = () => {
         <input
           id="link"
           v-model="link"
-          :class="{
-            'form-input--correct': isLinkCorrect,
-            'form-input--error': isLinkCorrect === false,
-          }"
           autocomplete="off"
           class="input-simple"
+          :class="
+            isLinkCorrect === true
+              ? 'form-input--correct'
+              : isLinkCorrect === false
+              ? 'form-input--error'
+              : ''
+          "
           name="link"
           placeholder="https://kknights.com/bonfire/1234567"
           type="text"
@@ -124,6 +129,14 @@ const sendFormData = () => {
     <div class="w-full">
       <fieldset>
         <legend class="title">Выбирать по:</legend>
+
+        <p
+          v-if="!filterByLike && !filterByComment"
+          class="text-red-500 text-sm mt-2"
+        >
+          Необходимо выбрать минимум одно условие
+        </p>
+
         <div class="flex flex-col gap-4 mt-2">
           <div>
             <input
@@ -160,11 +173,16 @@ const sendFormData = () => {
             <input
               id="wordSearch"
               v-model="word"
-              :class="{
-                'form-input--correct': isWordCorrect,
-                'form-input--error': isWordCorrect === false,
-              }"
-              class="input-simple"
+              :class="[
+                'input-simple',
+                findByWord === false
+                  ? ''
+                  : isWordCorrect === true
+                  ? 'form-input--correct'
+                  : isWordCorrect === false
+                  ? 'form-input--error'
+                  : '',
+              ]"
               name="wordSearch"
               placeholder="Введите слово / фразу или оставтье пустым"
               type="text"
@@ -197,7 +215,7 @@ const sendFormData = () => {
           id="winnersCount"
           v-model="winnersCount"
           :class="{
-            'form-input--correct': isWinnersCountCorrect,
+            'form-input--correct': isWinnersCountCorrect === true,
             'form-input--error': isWinnersCountCorrect === false,
           }"
           class="w-full h-10 rounded-lg input-simple"
@@ -217,59 +235,13 @@ const sendFormData = () => {
       </fieldset>
     </div>
 
-    <button class="button" type="submit">
+    <button
+      class="cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+      type="submit"
+    >
       {{ buttonText }}
     </button>
   </form>
 </template>
 
-<style lang="scss">
-.input-simple {
-  height: 40px;
-  width: 100%;
-  border-radius: 8px;
-  border: 2px solid transparent;
-  background: var(--color-toolbar-background);
-  color: var(--color-input-text);
-  font-family: Open Sans, sans-serif;
-  font-size: 14px;
-  padding: 8px 8px 10px;
-  box-shadow: none;
-  outline: 0 none transparent;
-  margin-top: 10px;
-}
-
-.form-input--correct {
-  border: 2px solid var(--color-green);
-}
-
-.form-input--error {
-  border: 2px solid var(--color-red-500);
-}
-
-.button {
-  outline: 0 none transparent;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-
-  height: 40px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  padding: 0 20px;
-  text-align: center;
-
-  color: var(--color-orange);
-  background: var(--color-button-primary-blue-background);
-
-  &:hover {
-    color: var(--color-black);
-    background: var(--color-orange);
-  }
-}
-</style>
+<style lang="scss"></style>

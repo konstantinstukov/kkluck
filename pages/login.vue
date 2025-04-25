@@ -52,7 +52,7 @@ const authForm = async () => {
     await navigateTo("/");
   } catch (err) {
     console.error("Auth error:", err);
-    errorMsg.value = "Ошибка авторизации: Доступ запрещен";
+    errorMsg.value = "Неправильный логин или пароль.";
   } finally {
     loading.value = false;
   }
@@ -61,57 +61,44 @@ const authForm = async () => {
 
 <template>
   <form
-    class="flex flex-col items-center justify-center gap-5 mt-8 mb-8 pl-4 pr-4"
+    class="flex flex-col items-center justify-center gap-5 mt-8 mb-8 max-w-[375px] container"
     @submit.prevent="authForm"
   >
-    <h2>Вход с учётной записью kknights.com</h2>
+    <h2 class="title text-center">Вход с учётной записью kknights.com</h2>
 
-    <div class="row">
-      <div class="field">
-        <input
-          id="email"
-          v-model="authFormData.email"
-          name="email"
-          placeholder="Почта"
-          type="email"
-        />
-      </div>
+    <p v-if="errorMsg" class="text-red-500 text-sm mt-2">
+      {{ errorMsg }}
+    </p>
+
+    <div class="w-full">
+      <input
+        id="email"
+        v-model="authFormData.email"
+        name="email"
+        placeholder="Почта"
+        type="email"
+        class="input-simple"
+      />
     </div>
-    <div class="row">
-      <div class="field">
-        <input
-          id="password"
-          v-model="authFormData.password"
-          name="password"
-          placeholder="Пароль"
-          type="password"
-        />
-      </div>
+    <div class="w-full">
+      <input
+        id="password"
+        v-model="authFormData.password"
+        name="password"
+        placeholder="Пароль"
+        type="password"
+        class="input-simple"
+      />
     </div>
-    <div class="form-actions">
-      <button class="button uppercased" type="submit">Войти</button>
+    <div>
+      <button
+        class="cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        type="submit"
+      >
+        Войти
+      </button>
     </div>
   </form>
 </template>
 
-<style lang="scss" scoped>
-.button {
-  outline: 0 none transparent;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  color: var(--color-orange);
-
-  .uppercased {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    padding: 0;
-    background: none;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

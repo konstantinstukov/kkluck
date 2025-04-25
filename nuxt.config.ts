@@ -7,6 +7,13 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   vite: {
     plugins: [tailwindcss()],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@import "@/assets/scss/_variables.scss";',
+        },
+      },
+    },
   },
   runtimeConfig: {
     public: {
