@@ -4,6 +4,7 @@ import { useFormDataStore } from "~/store/formDataStore.js";
 
 const formDataStore = useFormDataStore();
 const resultStore = useResultStore();
+const { fetchParticipants } = useParticipantsData();
 
 const router = useRouter();
 const isLoading = ref(true);
@@ -21,14 +22,14 @@ onMounted(async () => {
   }
 
   try {
-    const response = await $fetch(
-      useGetDataPath(formDataStore.getLink, formDataStore.getFormData()),
-      {
-        method: "GET",
-      }
+    const participants = await fetchParticipants(
+      formDataStore.getLink,
+      formDataStore.getFormData()
     );
 
-    resultStore.setParticipants(useFilterParticipants(response, formDataStore));
+    resultStore.setParticipants(
+      useFilterParticipants(participants, formDataStore)
+    );
     resultStore.setWinners(
       useWinnerSelect(
         resultStore.getParticipants,

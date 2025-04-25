@@ -3,7 +3,8 @@ import { defineStore } from "pinia";
 export const useFormDataStore = defineStore("formDataStore", {
   state: () => ({
     link: "",
-    filterBy: "like",
+    filterByLike: true,
+    filterByComment: false,
     findByWord: false,
     winnersCount: 1,
     word: null,
@@ -11,7 +12,8 @@ export const useFormDataStore = defineStore("formDataStore", {
   }),
   getters: {
     getLink: (state) => state.link,
-    getFilterBy: (state) => state.filterBy,
+    getFilterByLike: (state) => state.filterByLike,
+    getFilterByComment: (state) => state.filterByComment,
     getFindByWord: (state) => state.findByWord,
     getWinnersCount: (state) => state.winnersCount,
     getWord: (state) => state.word,
@@ -21,15 +23,21 @@ export const useFormDataStore = defineStore("formDataStore", {
     getFormData() {
       return {
         link: this.link,
-        filterBy: this.filterBy,
+        filterByLike: this.filterByLike,
+        filterByComment: this.filterByComment,
         findByWord: this.findByWord,
         winnersCount: this.winnersCount,
         word: this.word,
         hasImage: this.hasImage,
       };
     },
-    setFormData(formData) {
-      Object.assign(this, formData);
+
+    setFormDataField(key, value) {
+      if (key in this) {
+        this[key] = value;
+      } else {
+        console.warn(`Поле "${key}" не найдено в formDataStore`);
+      }
     },
   },
   persist: {
