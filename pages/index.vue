@@ -2,54 +2,36 @@
 import { useFormDataStore } from "~/store/formDataStore.js";
 
 const formDataStore = useFormDataStore();
-let localFormData = reactive({
-  link: "",
-  filterBy: "like",
-  findByWord: false,
-  winnersCount: 1,
-  word: null,
-  hasImage: false,
-});
+const {
+  link,
+  filterByLike,
+  filterByComment,
+  findByWord,
+  winnersCount,
+  word,
+  hasImage,
+} = storeToRefs(formDataStore);
 
 const router = useRouter();
 
 const buttonText = computed(() =>
-  localFormData.winnersCount > 1
-    ? "Определить победителей"
-    : "Определить победителя"
+  winnersCount.value > 1 ? "Определить победителей" : "Определить победителя"
 );
 const isLinkCorrect = ref(null);
 const isWinnersCountCorrect = ref(null);
 const isWordCorrect = ref(null);
 const wordErrorText = ref("");
 
-onMounted(async () => {
-  try {
-    localFormData = formDataStore.getFormData();
-  } catch (error) {
-    console.warn(error);
-  }
-});
-
 watch(
-  [() => localFormData.filterBy, () => localFormData.findByWord],
-  ([newFilterBy, newFindByWord]) => {
-    if (newFilterBy === "like" || !newFindByWord) {
-      localFormData.word = "";
-      localFormData.hasImage = false;
+  [() => findByWord.value, () => filterByComment.value],
+  ([newFindByWord, newFilterByComment]) => {
+    if (!newFindByWord) {
+      word.value = "";
+      hasImage.value = false;
     }
 
-    if (newFilterBy === "like") {
-      localFormData.findByWord = false;
-    }
-  }
-);
-
-watch(
-  () => localFormData.link,
-  (newValue) => {
-    if (newValue === "") {
-      isLinkCorrect.value = null;
+    if (!newFilterByComment) {
+      findByWord.value = false;
     }
   }
 );
@@ -60,27 +42,24 @@ const validateLink = () => {
     /^https:\/\/kknights\.com\/posts\/[a-zA-Z0-9-]+(?:\?.*)?$/;
 
   isLinkCorrect.value =
-    (bonfirePattern.test(localFormData.link) ||
-      postsPattern.test(localFormData.link)) &&
-    localFormData.link !== "";
+    (bonfirePattern.test(link.value) || postsPattern.test(link.value)) &&
+    link.value !== "";
 };
 
 const validateWinnersCount = () => {
   isWinnersCountCorrect.value =
-    localFormData.winnersCount >= 1 && localFormData.winnersCount <= 100;
+    winnersCount.value >= 1 && winnersCount.value <= 100;
 };
 
 const validateWordInput = () => {
-  if (localFormData.filterBy === "comment" && localFormData.findByWord) {
-    const word = localFormData.word;
-
-    if (word.length > 30) {
+  if (filterByComment.value && findByWord.value) {
+    if (word.value.length > 30) {
       isWordCorrect.value = false;
       wordErrorText.value = "Поле не должно превышать 30 символов";
       return;
     }
 
-    if (word.length === 0 && !localFormData.hasImage) {
+    if (word.value.length === 0 && !hasImage.value) {
       isWordCorrect.value = false;
       wordErrorText.value = "Введите слово/фразу или выберите изображение";
       return;
@@ -110,7 +89,6 @@ const validateForm = () => {
 
 const sendFormData = () => {
   if (validateForm()) {
-    formDataStore.setFormData(localFormData);
     router.push("/result");
   }
 };
@@ -126,7 +104,7 @@ const sendFormData = () => {
         <legend class="title">Ссылка на пост или записку в кострище:</legend>
         <input
           id="link"
-          v-model="localFormData.link"
+          v-model="link"
           :class="{
             'form-input--correct': isLinkCorrect,
             'form-input--error': isLinkCorrect === false,
@@ -150,9 +128,9 @@ const sendFormData = () => {
           <div>
             <input
               id="like"
-              v-model="localFormData.filterBy"
-              name="filterBy"
-              type="radio"
+              v-model="filterByLike"
+              name="filterByLike"
+              type="checkbox"
               value="like"
             />
             <label class="px-2" for="like">Лапкам</label>
@@ -160,28 +138,28 @@ const sendFormData = () => {
           <div>
             <input
               id="comment"
-              v-model="localFormData.filterBy"
-              name="filterBy"
-              type="radio"
+              v-model="filterByComment"
+              name="filterByComment"
+              type="checkbox"
               value="comment"
             />
             <label class="px-2" for="comment">Комментам</label>
           </div>
         </div>
 
-        <div v-if="localFormData.filterBy === 'comment'" class="mt-4">
+        <div v-if="filterByComment" class="mt-4">
           <input
             id="findByWord"
-            v-model="localFormData.findByWord"
+            v-model="findByWord"
             name="findByWord"
             type="checkbox"
           />
           <label class="pl-2" for="findByWord">Выбирать по содержанию</label>
 
-          <div v-if="localFormData.findByWord">
+          <div v-if="findByWord">
             <input
               id="wordSearch"
-              v-model="localFormData.word"
+              v-model="word"
               :class="{
                 'form-input--correct': isWordCorrect,
                 'form-input--error': isWordCorrect === false,
@@ -200,7 +178,7 @@ const sendFormData = () => {
             <div class="pt-4">
               <input
                 id="imgInclude"
-                v-model="localFormData.hasImage"
+                v-model="hasImage"
                 name="imgInclude"
                 type="checkbox"
                 @blur="validateWordInput"
@@ -217,7 +195,7 @@ const sendFormData = () => {
 
         <input
           id="winnersCount"
-          v-model="localFormData.winnersCount"
+          v-model="winnersCount"
           :class="{
             'form-input--correct': isWinnersCountCorrect,
             'form-input--error': isWinnersCountCorrect === false,
