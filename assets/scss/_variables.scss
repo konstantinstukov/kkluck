@@ -1,1 +1,18 @@
 $color-blue: #42638f;
+
+// Color palette
+:root {
+  --color-primary: #ff9e4a;
+  --color-secondary: #553b3d;
+  --text-title: #cdc6dc;
+  --text-primary: #cdc6dc;
+  --text-reverted: #181320;
+  --background-toolbar: #2a2239;
+  --background-panel: #181320;
+  --body-background: #110d16;
+  --input-background: #110d16;
+  --input-background-correct: #cdc6dc;
+  --color-body-background: #110d16;
+  --button-donation: #ac91df;
+  --button-donation-hover: #cdc6dc;
+}
