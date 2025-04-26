@@ -39,7 +39,7 @@ const logOut = async () => {
 <template>
   <header class="header">
     <div class="header-logo text-blue-900">
-      <NuxtLink to="/"> KKLuck</NuxtLink>
+      <a href="/"> KKLuck</a>
     </div>
     <div class="flex">
       <AppAbout />
