@@ -41,19 +41,12 @@ watch(
 
 const validateLink = () => {
   const bonfirePattern = /^https:\/\/kknights\.com\/bonfire\/\d+$/;
-  const postsPattern =
-      /^https:\/\/kknights\.com\/posts\/\d+-[a-zA-Z0-9-]+(?:\?.*)?$/;
-  const isOldPostsLink =
-      /^https:\/\/kknights\.com\/posts\/[a-zA-Zа-яА-Я0-9-]+(?:\?.*)?$/.test(
-          link.value
-      );
+  const postsPattern = /^https:\/\/kknights\.com\/posts\/([^/?#]+)/;
+
 
   if (bonfirePattern.test(link.value) || postsPattern.test(link.value)) {
     isLinkCorrect.value = true;
     linkErrorText.value = "";
-  } else if (isOldPostsLink) {
-    isLinkCorrect.value = false;
-    linkErrorText.value = "Ссылки на старые посты пока не поддерживаются";
   } else {
     isLinkCorrect.value = false;
     linkErrorText.value = "Некорректный формат ссылки";
