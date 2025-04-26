@@ -53,7 +53,7 @@ const validateLink = () => {
     linkErrorText.value = "";
   } else if (isOldPostsLink) {
     isLinkCorrect.value = false;
-    linkErrorText.value = "Старые ссылки на посты пока не поддерживаются";
+    linkErrorText.value = "Ссылки на старые посты пока не поддерживаются";
   } else {
     isLinkCorrect.value = false;
     linkErrorText.value = "Некорректный формат ссылки";
