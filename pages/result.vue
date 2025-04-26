@@ -27,9 +27,7 @@ onMounted(async () => {
       formDataStore.getFormData()
     );
 
-    resultStore.setParticipants(
-      useFilterParticipants(participants, formDataStore)
-    );
+    resultStore.setParticipants(participants);
 
     resultStore.setWinners(
       useWinnerSelect(
