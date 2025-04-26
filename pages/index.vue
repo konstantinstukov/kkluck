@@ -18,6 +18,7 @@ const buttonText = computed(() =>
   winnersCount.value > 1 ? "Определить победителей" : "Определить победителя"
 );
 const isLinkCorrect = ref(null);
+const linkErrorText = ref("");
 const isWinnersCountCorrect = ref(null);
 const isWordCorrect = ref(null);
 const wordErrorText = ref("");
@@ -41,11 +42,22 @@ watch(
 const validateLink = () => {
   const bonfirePattern = /^https:\/\/kknights\.com\/bonfire\/\d+$/;
   const postsPattern =
-    /^https:\/\/kknights\.com\/posts\/[a-zA-Z0-9-]+(?:\?.*)?$/;
+    /^https:\/\/kknights\.com\/posts\/\d+-[a-zA-Z0-9-]+(?:\?.*)?$/;
+  const isOldPostsLink =
+    /^https:\/\/kknights\.com\/posts\/[a-zA-Zа-яА-Я0-9-]+(?:\?.*)?$/.test(
+      link.value
+    );
 
-  isLinkCorrect.value =
-    (bonfirePattern.test(link.value) || postsPattern.test(link.value)) &&
-    link.value !== "";
+  if (bonfirePattern.test(link.value) || postsPattern.test(link.value)) {
+    isLinkCorrect.value = true;
+    linkErrorText.value = "";
+  } else if (isOldPostsLink) {
+    isLinkCorrect.value = false;
+    linkErrorText.value = "Старые ссылки на посты пока не поддерживаются";
+  } else {
+    isLinkCorrect.value = false;
+    linkErrorText.value = "Некорректный формат ссылки";
+  }
 };
 
 const validateWinnersCount = () => {
@@ -122,7 +134,7 @@ const sendFormData = () => {
           @blur="validateLink"
         />
         <p v-if="isLinkCorrect === false" class="text-red-500 text-sm mt-2">
-          Некорректный формат ссылки
+          {{ linkErrorText }}
         </p>
       </fieldset>
     </div>
