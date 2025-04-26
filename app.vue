@@ -1,5 +1,5 @@
 <script setup>
-import { NuxtLayout } from "#components";
+import {NuxtLayout} from "#components";
 
 useHead({
   title: "KKLuck - определитель победителей в конкурсах",
@@ -7,7 +7,7 @@ useHead({
     {
       name: "description",
       content:
-        "KKnights - Приложение для определения победителей в конкурсах на сайте kknights.com",
+          "KKnights - Приложение для определения победителей в конкурсах на сайте kknights.com",
     },
   ],
   link: [
@@ -23,14 +23,14 @@ useHead({
 <template>
   <div class="app">
     <NuxtLayout>
-      <AppHeader />
-      <NuxtLoadingIndicator />
+      <AppHeader/>
+      <NuxtLoadingIndicator/>
       <main class="view">
         <div class="main-content">
-          <NuxtPage />
+          <NuxtPage/>
         </div>
       </main>
-      <AppFooter />
+      <AppFooter/>
     </NuxtLayout>
   </div>
 </template>
@@ -66,6 +66,7 @@ useHead({
   padding: 30px;
   border-radius: 24px;
   box-shadow: 2px 2px 20px 0 rgba(13, 66, 115, 0.21);
+  background-color: var(--background-panel);
 }
 
 .title {
@@ -78,9 +79,8 @@ useHead({
   height: 40px;
   width: 100%;
   border-radius: 8px;
-  border: 2px solid var(--color-blue-200);
-  background: var(--color-toolbar-background);
-  color: var(--color-input-text);
+  background: var(--input-background);
+  color: var(--text-primary);
   font-family: Open Sans, sans-serif;
   font-size: 14px;
   padding: 8px 8px 10px;
@@ -90,7 +90,8 @@ useHead({
 }
 
 .form-input--correct {
-  border: 2px solid var(--color-green-500);
+  background-color: var(--input-background-correct);
+  color: var(--background-toolbar);
 }
 
 .form-input--error {
@@ -114,12 +115,12 @@ useHead({
   padding: 0 20px;
   text-align: center;
 
-  color: var(--color-orange);
-  background: var(--color-button-primary-blue-background);
+  color: var(--color-primary);
+  background: var(--color-secondary);
 
   &:hover {
-    color: var(--color-black);
-    background: var(--color-orange);
+    color: var(--background-toolbar);
+    background: var(--color-primary);
   }
 }
 </style>
