@@ -1,34 +1,6 @@
+import {useFilterParticipants} from "~/composables/useFilterParticipants.js";
+
 export const useParticipantsData = () => {
-	const filterComments = (comments, uniqueMap, formData) => {
-		if (!comments?.length) return;
-
-		comments.forEach((comment) => {
-			const hasImageAttachment = formData?.hasImage
-				? comment.attachments?.some((attachment) => attachment.type === "image")
-				: true;
-
-			const shouldInclude =
-				(!formData?.findByWord ||
-					(formData.word &&
-						comment.text
-							?.toLowerCase()
-							.includes(formData.word.toLowerCase()))) &&
-				hasImageAttachment;
-
-			if (
-				shouldInclude &&
-				comment?.user?.id &&
-				!uniqueMap.has(comment.user.id)
-			) {
-				uniqueMap.set(comment.user.id, comment);
-			}
-
-			if (comment.children?.length) {
-				filterComments(comment.children, uniqueMap, formData);
-			}
-		});
-	};
-
 	const fetchParticipants = async (link, formData) => {
 		if (formData.filterByLike && formData.filterByComment) {
 			try {
@@ -43,7 +15,7 @@ export const useParticipantsData = () => {
 				]);
 
 				const commentsUsersMap = new Map();
-				filterComments(commentsResponse.comments, commentsUsersMap, formData);
+				useFilterParticipants(commentsResponse.comments, commentsUsersMap, formData);
 
 				const uniqueParticipants = new Map();
 
@@ -71,7 +43,7 @@ export const useParticipantsData = () => {
 
 		if (formData.filterByComment) {
 			const uniqueComments = new Map();
-			filterComments(response.comments, uniqueComments, formData);
+			useFilterParticipants(response.comments, uniqueComments, formData);
 			return Array.from(uniqueComments.values());
 		}
 
