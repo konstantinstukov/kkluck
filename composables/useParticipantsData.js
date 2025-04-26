@@ -1,83 +1,84 @@
 export const useParticipantsData = () => {
-  const filterComments = (comments, uniqueMap, formData) => {
-    if (!comments?.length) return;
+	const filterComments = (comments, uniqueMap, formData) => {
+		if (!comments?.length) return;
 
-    comments.forEach((comment) => {
-      const hasImageAttachment = formData?.hasImage
-        ? comment.attachments?.some((attachment) => attachment.type === "image")
-        : true;
+		comments.forEach((comment) => {
+			const hasImageAttachment = formData?.hasImage
+				? comment.attachments?.some((attachment) => attachment.type === "image")
+				: true;
 
-      const shouldInclude =
-        (!formData?.findByWord ||
-          (formData.word &&
-            comment.text
-              ?.toLowerCase()
-              .includes(formData.word.toLowerCase()))) &&
-        hasImageAttachment;
+			const shouldInclude =
+				(!formData?.findByWord ||
+					(formData.word &&
+						comment.text
+							?.toLowerCase()
+							.includes(formData.word.toLowerCase()))) &&
+				hasImageAttachment;
 
-      if (
-        shouldInclude &&
-        comment?.user?.id &&
-        !uniqueMap.has(comment.user.id)
-      ) {
-        uniqueMap.set(comment.user.id, comment);
-      }
+			if (
+				shouldInclude &&
+				comment?.user?.id &&
+				!uniqueMap.has(comment.user.id)
+			) {
+				uniqueMap.set(comment.user.id, comment);
+			}
 
-      if (comment.children?.length) {
-        filterComments(comment.children, uniqueMap, formData);
-      }
-    });
-  };
+			if (comment.children?.length) {
+				filterComments(comment.children, uniqueMap, formData);
+			}
+		});
+	};
 
-  const fetchParticipants = async (link, formData) => {
-    if (formData.filterByLike && formData.filterByComment) {
-      try {
-        const [likesResponse, commentsResponse] = await Promise.all([
-          $fetch(useGetDataPath(link, { ...formData, filterByComment: false })),
-          $fetch(useGetDataPath(link, { ...formData, filterByLike: false })),
-        ]);
+	const fetchParticipants = async (link, formData) => {
+		if (formData.filterByLike && formData.filterByComment) {
+			try {
+				const [likePath, commentsPath] = await Promise.all([
+					useGetDataPath(link, {...formData, filterByComment: false}),
+					useGetDataPath(link, {...formData, filterByLike: false}),
+				]);
 
-        const commentsUsersMap = new Map();
-        filterComments(commentsResponse.comments, commentsUsersMap, formData);
+				const [likesResponse, commentsResponse] = await Promise.all([
+					$fetch(likePath),
+					$fetch(commentsPath),
+				]);
 
-        const uniqueParticipants = new Map();
+				const commentsUsersMap = new Map();
+				filterComments(commentsResponse.comments, commentsUsersMap, formData);
 
-        if (Array.isArray(likesResponse)) {
-          likesResponse.forEach((participant) => {
-            if (
-              participant?.user?.id &&
-              commentsUsersMap.has(participant.user.id)
-            ) {
-              uniqueParticipants.set(participant.user.id, participant);
-            }
-          });
-        }
+				const uniqueParticipants = new Map();
 
-        const result = Array.from(uniqueParticipants.values());
+				if (Array.isArray(likesResponse)) {
+					likesResponse.forEach((participant) => {
+						if (participant?.user?.id && commentsUsersMap.has(participant.user.id)) {
+							uniqueParticipants.set(participant.user.id, participant);
+						}
+					});
+				}
 
-        return result;
-      } catch (error) {
-        console.error("Fetch error:", error);
-        return [];
-      }
-    }
+				return Array.from(uniqueParticipants.values());
+			} catch (error) {
+				console.error("Fetch error:", error);
+				return [];
+			}
+		}
 
-    const response = await $fetch(useGetDataPath(link, formData));
+		const path = await useGetDataPath(link, formData);
+		const response = await $fetch(path);
 
-    if (formData.filterByLike) {
-      return response || [];
-    }
+		if (formData.filterByLike) {
+			return response || [];
+		}
 
-    if (formData.filterByComment) {
-      const uniqueComments = new Map();
-      filterComments(response.comments, uniqueComments);
-      return Array.from(uniqueComments.values());
-    }
+		if (formData.filterByComment) {
+			const uniqueComments = new Map();
+			filterComments(response.comments, uniqueComments, formData);
+			return Array.from(uniqueComments.values());
+		}
 
-    return [];
-  };
+		return [];
+	};
 
-  return {
-    fetchParticipants,
-  };
+	return {
+		fetchParticipants,
+	};
 };
