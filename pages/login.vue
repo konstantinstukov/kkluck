@@ -1,5 +1,5 @@
 <script setup>
-import { useAuthStore } from "~/store/authStore";
+import {useAuthStore} from "~/store/authStore";
 
 const authStore = useAuthStore();
 
@@ -24,9 +24,9 @@ const getCsrfToken = async () => {
   });
 
   return document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("csrftoken="))
-    ?.split("=")[1];
+      .split("; ")
+      .find((row) => row.startsWith("csrftoken="))
+      ?.split("=")[1];
 };
 
 const authForm = async () => {
@@ -61,8 +61,8 @@ const authForm = async () => {
 
 <template>
   <form
-    class="flex flex-col items-center justify-center gap-5 mt-8 mb-8 max-w-[375px] container"
-    @submit.prevent="authForm"
+      class="flex flex-col items-center justify-center gap-5 mt-8 mb-8 max-w-[375px] container"
+      @submit.prevent="authForm"
   >
     <h2 class="title text-center">Вход с учётной записью kknights.com</h2>
 
@@ -72,33 +72,31 @@ const authForm = async () => {
 
     <div class="w-full">
       <input
-        id="email"
-        v-model="authFormData.email"
-        name="email"
-        placeholder="Почта"
-        type="email"
-        class="input-simple"
+          id="email"
+          v-model="authFormData.email"
+          class="input-simple"
+          name="email"
+          placeholder="Почта"
+          type="email"
       />
     </div>
     <div class="w-full">
       <input
-        id="password"
-        v-model="authFormData.password"
-        name="password"
-        placeholder="Пароль"
-        type="password"
-        class="input-simple"
+          id="password"
+          v-model="authFormData.password"
+          class="input-simple"
+          name="password"
+          placeholder="Пароль"
+          type="password"
       />
     </div>
     <div>
       <button
-        class="cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-        type="submit"
+          class="cursor-pointer inline-flex justify-center rounded-md border border-transparent bg-(--color-secondary) px-4 py-2 text-sm font-medium text-(--color-primary) hover:bg-(--color-primary) hover:text-(--background-panel) focus:outline-none focus-visible:ring-2 focus-visible:ring-(color-primary) focus-visible:ring-offset-2"
+          type="submit"
       >
         Войти
       </button>
     </div>
   </form>
 </template>
-
-<style lang="scss" scoped></style>
