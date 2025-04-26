@@ -14,7 +14,7 @@ useHead({
     {
       rel: "icon",
       type: "image/x-icon",
-      href: "/favicon.ico",
+      href: "https://kkluck.vercel.app/favicon.ico",
     },
   ],
 });
