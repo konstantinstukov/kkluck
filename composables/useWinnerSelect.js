@@ -3,13 +3,9 @@ export function useWinnerSelect(participants, maxWinners) {
     return [];
   }
   if (participants.length === 0) {
-    console.warn("Участники отсутствуют :(");
     return [];
   }
   if (maxWinners <= 0) {
-    console.warn(
-      "Максимальное количество победителей не должно быть меньше нуля."
-    );
     return [];
   }
 
