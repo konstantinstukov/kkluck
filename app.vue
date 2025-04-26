@@ -1,11 +1,22 @@
 <script setup>
 import { NuxtLayout } from "#components";
 
-useSeoMeta({
+useHead({
   title: "KKLuck - определитель победителей в конкурсах",
-  description:
-    "KKnights - Приложение для определения победителей в конкурсах на сайте kknights.com",
-  icon: "/favicon.ico",
+  meta: [
+    {
+      name: "description",
+      content:
+        "KKnights - Приложение для определения победителей в конкурсах на сайте kknights.com",
+    },
+  ],
+  link: [
+    {
+      rel: "icon",
+      type: "image/x-icon",
+      href: "/favicon.ico",
+    },
+  ],
 });
 </script>
 
