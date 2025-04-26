@@ -1,7 +1,6 @@
 export const useGetDataPath = (url, formData) => {
   const isBonfire = url.includes("bonfire/");
   const isPost = url.includes("posts/");
-  const isApiPost = url.includes("/api/v1/post/");
   const filterByLike = formData.filterByLike;
   const filterByComment = formData.filterByComment;
 
@@ -24,9 +23,6 @@ export const useGetDataPath = (url, formData) => {
     if (isPost) {
       const match = url.match(/posts\/(\d+.*?)(?:\/|$)/);
       if (match) return `/api/post/${match[1]}/`;
-    }
-    if (isApiPost) {
-      return url;
     }
   }
 
