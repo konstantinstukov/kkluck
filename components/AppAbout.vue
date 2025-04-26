@@ -76,8 +76,9 @@ function closeModal() {
                     >
                       <span>1. Выбор победителей по лапкам (лайкам):</span>
                       <ChevronUpIcon
-                          :class="open ? 'rotate-180 transform' : ''"
-                          class="h-5 w-5 text-inherit"
+                          :class="['h-5 w-5 text-inherit transition-transform duration-300 rotate-180',
+                          open && 'rotate-360'
+                          ]"
                       />
                     </DisclosureButton>
                     <DisclosurePanel
@@ -95,8 +96,9 @@ function closeModal() {
                     >
                       <span>2. Выбор победителей по комментариям:</span>
                       <ChevronUpIcon
-                          :class="open ? 'rotate-180 transform' : ''"
-                          class="h-5 w-5 text-inherit"
+                          :class="['h-5 w-5 text-inherit transition-transform duration-300 rotate-180',
+                          open && 'rotate-360'
+                          ]"
                       />
                     </DisclosureButton>
                     <DisclosurePanel
@@ -114,8 +116,9 @@ function closeModal() {
                     >
                       <span>3. Фильтрация комментариев по содержанию:</span>
                       <ChevronUpIcon
-                          :class="open ? 'rotate-180 transform' : ''"
-                          class="h-5 w-5 text-inherit"
+                          :class="['h-5 w-5 text-inherit transition-transform duration-300 rotate-180',
+                          open && 'rotate-360'
+                          ]"
                       />
                     </DisclosureButton>
                     <DisclosurePanel
@@ -143,7 +146,7 @@ function closeModal() {
                       <span class="usage-step"
                       >Вставьте ссылку на пост или записку в кострище в
                         формате:
-                        <ul class="pl-4">
+                        <ul class="pl-4 pt-4">
                           <li class="font-normal">
                             <code
                                 class="text-(--color-primary) bg-(--color-secondary)">https://kknights.com/bonfire/123</code>
@@ -164,7 +167,7 @@ function closeModal() {
                       >Если выбран отбор по комментариям, вы можете
                         дополнительно фильтровать по содержанию:</span
                       >
-                      <ul class="pl-4">
+                      <ul class="pl-4 pt-4">
                         <li>Включите опцию "Выбирать по содержанию"</li>
                         <li>
                           Введите слово или фразу для поиска (до 30 символов)
