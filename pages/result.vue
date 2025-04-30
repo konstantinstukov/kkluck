@@ -143,18 +143,19 @@ const goBack = () => {
         </h2>
         <div class="flex flex-col gap-4">
           <div
-              v-for="winner in resultStore.getWinners"
-              :key="winner.user.id"
-              class="flex items-center gap-4"
+            v-for="winner in resultStore.getWinners"
+            :key="winner.user.id"
+            class="flex items-center gap-4"
           >
             <a
-                :href="`https://kknights.com/users/${winner.user.id}`"
-                class="text-(--color-primary) flex items-center gap-2.5"
+              target="_blank"
+              :href="`https://kknights.com/users/${winner.user.id}`"
+              class="text-(--color-primary) flex items-center gap-2.5"
             >
               <img
-                  :src="winner.user.avatar.small"
-                  alt="avatar"
-                  class="w-[40px] h-[40px] rounded-full object-cover"
+                :src="winner.user.avatar.small"
+                alt="avatar"
+                class="w-[40px] h-[40px] rounded-full object-cover"
               />
               {{ winner.user.username }}
             </a>
