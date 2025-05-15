@@ -1,7 +1,9 @@
 import { useAuthStore } from "~/store/authStore";
+import { useFormDataStore } from "~/store/formDataStore";
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const authStore = useAuthStore();
+  const { isValid } = useFormDataStore();
 
   if (!authStore.user) {
     try {
@@ -20,5 +22,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (!authStore.user && to.path !== "/login") {
     return navigateTo("/login");
+  }
+
+  if (!isValid && to.path === "/result") {
+    return navigateTo("/");
   }
 });
