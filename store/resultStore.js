@@ -3,10 +3,6 @@ export const useResultStore = defineStore("resultStore", {
     participants: null,
     winners: null,
   }),
-  getters: {
-    getParticipants: (state) => state.participants,
-    getWinners: (state) => state.winners,
-  },
   actions: {
     setParticipants(filteredParticipants) {
       this.participants = filteredParticipants;
