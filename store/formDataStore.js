@@ -9,29 +9,9 @@ export const useFormDataStore = defineStore("formDataStore", {
     winnersCount: 1,
     word: null,
     hasImage: false,
+    isValid: false,
   }),
-  getters: {
-    getLink: (state) => state.link,
-    getFilterByLike: (state) => state.filterByLike,
-    getFilterByComment: (state) => state.filterByComment,
-    getFindByWord: (state) => state.findByWord,
-    getWinnersCount: (state) => state.winnersCount,
-    getWord: (state) => state.word,
-    getHasImage: (state) => state.hasImage,
-  },
   actions: {
-    getFormData() {
-      return {
-        link: this.link,
-        filterByLike: this.filterByLike,
-        filterByComment: this.filterByComment,
-        findByWord: this.findByWord,
-        winnersCount: this.winnersCount,
-        word: this.word,
-        hasImage: this.hasImage,
-      };
-    },
-
     setFormDataField(key, value) {
       if (key in this) {
         this[key] = value;
