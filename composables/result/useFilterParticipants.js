@@ -4,7 +4,13 @@ export const useFilterParticipants = (comments, uniqueMap, formData) => {
   comments.forEach((comment) => {
     if (!comment?.user?.id) return;
 
-    const text = comment.text?.toLowerCase() || "";
+    let text = comment.text?.toLowerCase() || "";
+
+    if (comment.respond_to_comment?.text) {
+      const respondText = comment.respond_to_comment.text.toLowerCase();
+      text = text.replace(respondText, "").trim();
+    }
+
     const wordFilterPassed = formData?.word
       ? text.includes(formData.word.toLowerCase())
       : true;
