@@ -4,16 +4,37 @@ export const useFilterParticipants = (comments, uniqueMap, formData) => {
   comments.forEach((comment) => {
     if (!comment?.user?.id) return;
 
-    let text = comment.text?.toLowerCase() || "";
+    const text = comment.text?.toLowerCase() || "";
 
-    if (comment.respond_to_comment?.text) {
-      const respondText = comment.respond_to_comment.text.toLowerCase();
-      text = text.replace(respondText, "").trim();
+    let wordFilterPassed = true;
+
+    if (formData?.word) {
+      const searchWord = formData.word.toLowerCase();
+      const textContainsWord = text.includes(searchWord);
+
+      // Если есть respond_to_comment, проверяем что слово НЕ найдено только в цитируемом тексте
+      if (comment.respond_to_comment?.text) {
+        const respondText = comment.respond_to_comment.text.toLowerCase();
+        const respondContainsWord = respondText.includes(searchWord);
+
+        // Если слово найдено в основном тексте И в цитируемом тексте,
+        // нужно убедиться что оно есть не только в цитируемой части
+        if (textContainsWord && respondContainsWord) {
+          // Удаляем цитируемый текст и проверяем, осталось ли искомое слово
+          const textWithoutRespond = text.replace(respondText, "").trim();
+          wordFilterPassed = textWithoutRespond.includes(searchWord);
+        } else if (textContainsWord && !respondContainsWord) {
+          // Слово есть в основном тексте, но нет в цитируемом - это нормально
+          wordFilterPassed = true;
+        } else {
+          // Слова нет в основном тексте
+          wordFilterPassed = false;
+        }
+      } else {
+        // Нет respond_to_comment, обычная проверка
+        wordFilterPassed = textContainsWord;
+      }
     }
-
-    const wordFilterPassed = formData?.word
-      ? text.includes(formData.word.toLowerCase())
-      : true;
     const imageFilterPassed = formData?.hasImage
       ? comment.images?.length > 0
       : true;
