@@ -4,37 +4,17 @@ export const useFilterParticipants = (comments, uniqueMap, formData) => {
   comments.forEach((comment) => {
     if (!comment?.user?.id) return;
 
-    const text = comment.text?.toLowerCase() || "";
+    // Создаем глубокую копию комментария без respond_to_comment для поиска
+    const commentForSearch = JSON.parse(JSON.stringify(comment));
+    delete commentForSearch.respond_to_comment;
 
-    let wordFilterPassed = true;
+    // Преобразуем в строку для поиска, исключая respond_to_comment
+    const searchText = JSON.stringify(commentForSearch).toLowerCase();
 
-    if (formData?.word) {
-      const searchWord = formData.word.toLowerCase();
-      const textContainsWord = text.includes(searchWord);
+    const wordFilterPassed = formData?.word
+      ? searchText.includes(formData.word.toLowerCase())
+      : true;
 
-      // Если есть respond_to_comment, проверяем что слово НЕ найдено только в цитируемом тексте
-      if (comment.respond_to_comment?.text) {
-        const respondText = comment.respond_to_comment.text.toLowerCase();
-        const respondContainsWord = respondText.includes(searchWord);
-
-        // Если слово найдено в основном тексте И в цитируемом тексте,
-        // нужно убедиться что оно есть не только в цитируемой части
-        if (textContainsWord && respondContainsWord) {
-          // Удаляем цитируемый текст и проверяем, осталось ли искомое слово
-          const textWithoutRespond = text.replace(respondText, "").trim();
-          wordFilterPassed = textWithoutRespond.includes(searchWord);
-        } else if (textContainsWord && !respondContainsWord) {
-          // Слово есть в основном тексте, но нет в цитируемом - это нормально
-          wordFilterPassed = true;
-        } else {
-          // Слова нет в основном тексте
-          wordFilterPassed = false;
-        }
-      } else {
-        // Нет respond_to_comment, обычная проверка
-        wordFilterPassed = textContainsWord;
-      }
-    }
     const imageFilterPassed = formData?.hasImage
       ? comment.images?.length > 0
       : true;
