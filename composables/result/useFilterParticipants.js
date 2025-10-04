@@ -4,12 +4,8 @@ export const useFilterParticipants = (comments, uniqueMap, formData) => {
   comments.forEach((comment) => {
     if (!comment?.user?.id) return;
 
-    // Создаем глубокую копию комментария без respond_to_comment для поиска
-    const commentForSearch = JSON.parse(JSON.stringify(comment));
-    delete commentForSearch.respond_to_comment;
-
-    // Преобразуем в строку для поиска, исключая respond_to_comment
-    const searchText = JSON.stringify(commentForSearch).toLowerCase();
+    // Ищем только в тексте самого комментария, исключая respond_to_comment
+    const searchText = comment.text ? comment.text.toLowerCase() : '';
 
     const wordFilterPassed = formData?.word
       ? searchText.includes(formData.word.toLowerCase())
